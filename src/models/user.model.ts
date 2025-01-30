@@ -28,6 +28,7 @@ const User = sequelize.define(
 
     email: {
       type: DataTypes.STRING,
+      unique: true, 
       allowNull: false,
       validate: {
         notEmpty: {
@@ -38,10 +39,6 @@ const User = sequelize.define(
         },
         isEmail: {
           msg: 'Please enter a valid email',
-        },
-        isUnique: {
-          args: true,
-          msg: 'Email already exists',
         },
       },
     },
