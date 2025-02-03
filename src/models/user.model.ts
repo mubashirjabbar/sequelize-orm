@@ -3,6 +3,17 @@ import { DataTypes } from 'sequelize';
 
 import sequelize from '../config/database';
 
+
+// Define the TypeScript interface for User
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  profileImage: string;
+}
+
 const User = sequelize.define(
   'users',
   {
@@ -28,7 +39,7 @@ const User = sequelize.define(
 
     email: {
       type: DataTypes.STRING,
-      unique: true, 
+      unique: true,
       allowNull: false,
       validate: {
         notEmpty: {

@@ -9,7 +9,7 @@ import logger from "../utils/logger";
 
 
 // Function to generate JWT token
-export const generateToken = (userId: string) => {
+export const generateToken = (userId: number) => {
     const JWT_TOKEN_STRING = process.env.JWT_TOKEN_STRING;
     if (!JWT_TOKEN_STRING) {
         throw new Error("JWT secret is not defined. Check your environment variables.");
