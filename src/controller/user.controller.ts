@@ -37,6 +37,7 @@ const registerUser = asyncHandler(async (req: any, res: any, next: any) => {
             password,
             phoneNumber,
             profileImage,
+            roleId: 2, // Default role for new users
         });
 
         // Send success response
