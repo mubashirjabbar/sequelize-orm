@@ -5,9 +5,6 @@ import User from "../models/user.model";
 import AppError from "../utils/appError";
 import logger from "../utils/logger";
 
-
-
-
 // Function to generate JWT token
 export const generateToken = (userId: number) => {
     const JWT_TOKEN_STRING = process.env.JWT_TOKEN_STRING;
@@ -16,7 +13,7 @@ export const generateToken = (userId: number) => {
     }
 
     const payload = { id: userId };
-    const options = { expiresIn: "1d" }; // Token expires in 1 hour
+    const options: jwt.SignOptions = { expiresIn: "1d" }; // ✅ Explicit type definition
 
     return jwt.sign(payload, JWT_TOKEN_STRING, options);
 };
@@ -36,6 +33,7 @@ export const createUser = async (userData: {
     password: string;
     phoneNumber: string;
     profileImage: string;
+    roleId: number;
 }) => {
     try {
 
@@ -52,7 +50,11 @@ export const createUser = async (userData: {
             throw new AppError("Failed to create the user", 400);
         }
         // Generate JWT token using Sequelize's id field
-        const token = generateToken(newUser.getDataValue("id"));
+        const userId = newUser.getDataValue("id");
+        if (typeof userId !== 'number') {
+            throw new AppError("User ID is not a valid number", 500);
+        }
+        const token = generateToken(userId);
 
         // Remove password before sending response
         const userWithoutPassword = { ...newUser.get(), password: undefined };

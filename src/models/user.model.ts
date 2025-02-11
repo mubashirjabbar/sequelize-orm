@@ -1,21 +1,29 @@
 'use strict';
-import { DataTypes } from 'sequelize';
-
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
-
 
 // Define the TypeScript interface for User
 export interface IUser {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password: string;
   phoneNumber: string;
   profileImage: string;
+  roleId: number;
 }
 
-const User = sequelize.define(
-  'users',
+class User extends Model<IUser> implements IUser {
+  public id!: number;
+  public name!: string;
+  public email!: string;
+  public password!: string;
+  public phoneNumber!: string;
+  public profileImage!: string;
+  public roleId!: number;
+}
+
+User.init(
   {
     id: {
       allowNull: false,
@@ -23,7 +31,6 @@ const User = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -36,7 +43,6 @@ const User = sequelize.define(
         },
       },
     },
-
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -53,7 +59,6 @@ const User = sequelize.define(
         },
       },
     },
-
     password: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -62,11 +67,10 @@ const User = sequelize.define(
           msg: 'Password cannot be empty',
         },
         notNull: {
-          msg: 'password cannot be null',
+          msg: 'Password cannot be null',
         },
       },
     },
-
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -79,7 +83,6 @@ const User = sequelize.define(
         },
       },
     },
-
     profileImage: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -95,8 +98,28 @@ const User = sequelize.define(
         },
       },
     },
-
+    roleId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Roles",
+        key: "id",
+      },
+    },
   },
+  {
+    sequelize,
+    tableName: 'users',
+    timestamps: true,
+  }
 );
+
+// Define associations in a separate function
+export const associateUser = (models: any) => {
+  User.belongsTo(models.Role, {
+    foreignKey: 'roleId',
+    as: 'role',
+  });
+};
 
 export default User;
